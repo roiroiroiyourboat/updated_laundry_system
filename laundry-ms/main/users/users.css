@@ -1,0 +1,290 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", 'Segoe UI';
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.progress {
+    height: 3px;
+    width: 0%;
+    background-color: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    animation: progress 1s linear;
+}
+
+@keyframes progress {
+    to {
+        background-color: rgb(20, 255, 226);
+        width: 100%;
+    }
+}
+
+/*sidebar*/
+.sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 80px;
+    border-radius: 0 18px 18px 0;
+    background-color: #b8c1ec;
+    padding: 0.4rem 0.8rem;
+    transition: all 0.5s ease;
+    z-index: 1000; /*ensure sidebar is above main content*/
+}
+
+.sidebar.active {
+    width: 250px;
+}
+
+/*sidebar burger menu*/
+.sidebar #btnMenu {
+    position: absolute;
+    top: 1%;
+    left: 50%;
+    font-size: 1.5rem;
+    line-height: 50px;
+    transform: translateX(-50%);
+    cursor: pointer;
+}
+
+.sidebar.active #btnMenu {
+    left: 90%;
+}
+
+/*logo*/
+.sidebar .top .logo {
+    display: flex;
+    height: 50px;
+    width: 100%;
+    align-items: center;
+    pointer-events: none;
+    opacity: 0;   
+}
+
+.sidebar.active .top .logo {
+    opacity: 1;
+}
+
+.top .logo img {
+    width: 35px;
+    height: 35px;
+    margin-right: 5px;
+}
+
+/*user section*/
+.user {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.user-image {
+    width: 50px;
+    border-radius: 100%;
+    border: 1px solid #eee;
+}
+
+.user p {
+    margin-left: 1rem;
+    opacity: 1;
+}
+
+.bold {
+    font-weight: 600;
+}
+
+.sidebar p {
+    opacity: 0;
+}
+
+.sidebar.active p {
+    opacity: 1;
+}
+
+/*nav items*/
+.sidebar ul li {
+    position: relative;
+    list-style-type: none;
+    height: 50px;
+    width: 90%;
+    margin: 0.8rem auto;
+    line-height: 50px;
+}
+
+.sidebar ul li a {
+    color: #000;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    border-radius: 0.8rem;
+}
+
+.sidebar ul li a:hover {
+    background-color: #232946;
+    color: #fff;
+}
+
+.sidebar ul li a i {
+    min-width: 50px;
+    text-align: center;
+    height: 50px;
+    border-radius: 12px;
+    line-height: 50px;
+}
+
+/*nav items tooltip*/
+.sidebar .nav-item {
+    opacity: 0;
+}
+
+.sidebar.active .nav-item {
+    opacity: 1;
+}
+
+.sidebar ul li .tooltip {
+    position: absolute;
+    left: 125px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    border-radius: 0.6rem;
+    padding: 0.4rem 1.2rem;
+    line-height: 1.8rem;
+    z-index: 20;
+    opacity: 0;
+}
+
+.sidebar ul li:hover .tooltip {
+    opacity: 1;
+}
+
+.sidebar.active ul li .tooltip {
+    display: none;
+}
+
+.sidebar ul li .bx-chevron-down{
+    opacity: 0;
+}
+
+.sidebar.active ul li .bx-chevron-down{
+    opacity: 1;
+}
+
+/*for responsiveness*/
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+    }
+
+    .sidebar.active {
+        width: 200px;
+    }
+
+    .main-content {
+        margin-left: 70px;
+    }
+
+    .sidebar.active ~ .main-content {
+        margin-left: 210px;
+        width: calc(100% - 210px);
+    }
+
+    .sidebar.active #btnMenu {
+        left: 85%;
+    }
+
+    .sidebar #btnMenu {
+        left: 50%;
+    }
+
+    .sidebar .top .logo {
+        height: 40px;
+    }
+
+    .top .logo img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .user-image {
+        min-width: 35px;
+    }
+
+    .sidebar ul li a i {
+        min-width: 30px;
+        text-align: center;
+        height: 50px;
+        border-radius: 12px;
+        line-height: 50px;
+    }
+}
+
+/*main content*/
+.main-content {
+    margin-left: 95px; 
+    transition: margin-left 0.5s ease;
+}
+
+.sidebar.active ~ .main-content {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    transition: all 0.5s ease;
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 50px;
+    }
+
+    .sidebar.active {
+        width: 180px;
+    }
+
+    .main-content {
+        margin-left: 60px;
+    }
+
+    .sidebar.active ~ .main-content {
+        margin-left: 190px;
+        width: calc(100% - 190px);
+    }
+
+    .sidebar.active #btnMenu {
+        left: 80%;
+    }
+
+    .sidebar #btnMenu {
+        left: 50%;
+    }
+
+    .sidebar .top .logo {
+        height: 35px;
+    }
+
+    .top .logo img {
+        width: 25px;
+        height: 25px;
+    }
+
+    .user-image {
+        min-width: 30px;
+    }
+
+    .sidebar ul li a i {
+        min-width: 25px;
+        text-align: center;
+        height: 50px;
+        border-radius: 12px;
+        line-height: 50px;
+    }
+}
