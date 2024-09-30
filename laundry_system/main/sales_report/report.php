@@ -11,6 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js" 
     integrity="sha512-JPcRR8yFa8mmCsfrw4TNte1ZvF1e3+1SdGMslZvmrzDYxS69J7J49vkFL8u6u8PlPJK+H3voElBtUCzaXj+6ig=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="report.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -1048,28 +1049,6 @@
                 </div> <!--end of charts-container-->
 
             <!---------------------------TRANSACTION SUMMARY-------------------------------->
-            <?php 
-                $conn = new mysqli('localhost', 'root', '', 'laundry_db');
-
-                // Check connection
-                if ($conn->connect_error) {
-                    die("Connection failed: " . $conn->connect_error);
-                }
-
-                $records_per_page = 10;
-                $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-                $offset = ($page - 1) * $records_per_page;
-
-                // get total records
-                $total_query = "SELECT COUNT(DISTINCT t.transaction_id) AS total FROM transaction t
-                                JOIN service_request sr ON t.request_id = sr.request_id
-                                JOIN customer c ON t.customer_id = c.customer_id";
-                $total_result = $conn->query($total_query);
-                $total_row = $total_result->fetch_assoc();
-                $total_records = $total_row['total'];
-                $total_pages = ceil($total_records / $records_per_page);
-            ?>
-
             <div class="table-container">
                 <h3>Transaction Summary</h3>
                 <div class="btns">
@@ -1089,18 +1068,23 @@
                         <img src="/laundry_system/main/icons/calendar-regular-24.png" alt="Calendar Icon">
                         Yearly
                     </button>
-                    <button class="btn btn-light" onclick="printTransactionTable()">
+                    <button class="btn btn-info" onclick="printTransactionTable()">
                         <img src="/laundry_system/main/icons/printer-regular-24.png" alt="Printer Icon">
                         Print
                     </button>
                 </div>
 
+                <div class="search_bar m-1">
+                    <input class="form-control" type="text" id="filter_transac" placeholder="Search transactions...">
+                </div>
+
                 <div class="table-responsive">
-                    <table class="table align-middle table-hover">
+                    <table class="table align-middle table-hover" id="table_summary">
                         <thead>
                             <tr>
                                 <th scope="col">Transaction ID</th>
                                 <th scope="col">Date</th>
+                                <th scope="col">Order/Session ID</th>
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Service</th>
                                 <th scope="col">Category</th>
@@ -1125,28 +1109,8 @@
 
                 <!-- Pagination -->
                 <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        <?php if ($page > 1): ?>
-                            <li class="page-item">
-                                <a class="page-link" href="?page=<?php echo $page - 1; ?>">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-
-                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                            <li class="page-item <?php echo ($i == $page) ? 'active' : ''; ?>">
-                                <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                            </li>
-                        <?php endfor; ?>
-
-                        <?php if ($page < $total_pages): ?>
-                            <li class="page-item">
-                                <a class="page-link" href="?page=<?php echo $page + 1; ?>">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        <?php endif; ?>
+                    <ul class="pagination justify-content-center" id="pagination">
+                        <!--PAGINATION LINK-->
                     </ul>
                 </nav>
 
@@ -1172,50 +1136,129 @@
                         });
                     });
 
-                    function fetchTransactionSummary(filter) {
+                    function fetchTransactionSummary(filter, page = 1) {
                         const xhr = new XMLHttpRequest();
                         xhr.open('POST', '/laundry_system/main/sales_report/sales_config/transaction_summary.php', true);
                         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                         xhr.onload = function() {
                             if (this.status === 200) {
                                 const response = JSON.parse(this.responseText);
+
+                                // Update transaction table and total revenue
                                 document.getElementById('transaction-table-body').innerHTML = response.table_data;
                                 document.getElementById('total-revenue').innerText = response.total_revenue;
+
+                                // Update pagination
+                                let pagination = '';
+                                if (response.page > 1) {
+                                    pagination += `<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="fetchTransactionSummary('${filter}', ${response.page - 1})">&laquo;</a></li>`;
+                                }
+
+                                for (let i = 1; i <= response.total_pages; i++) {
+                                    pagination += `<li class="page-item ${i === response.page ? 'active' : ''}"><a class="page-link" href="javascript:void(0)" onclick="fetchTransactionSummary('${filter}', ${i})">${i}</a></li>`;
+                                }
+
+                                if (response.page < response.total_pages) {
+                                    pagination += `<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="fetchTransactionSummary('${filter}', ${response.page + 1})">&raquo;</a></li>`;
+                                }
+
+                                document.getElementById('pagination').innerHTML = pagination;
                             }
                         };
-                        xhr.send('filter=' + filter);
+
+                        // Send filter and page data
+                        xhr.send('filter=' + filter + '&page=' + page);
                     }
 
-                    // Print table
+                    //print table
                     function printTransactionTable() {
-                        var tableContent = document.querySelector('.table-responsive').outerHTML;
-                        var newWindow = window.open('', '', 'height=600,width=800');
-                        newWindow.document.write('<html><head><title>Transaction_Summary</title>');
-                        newWindow.document.write('<style>table {' + 
-                        'width: 100%; border-collapse: collapse; }' + 
-                        'th, td { border: 1px solid black; padding: 8px; text-align: left; }' + 
-                        '@media print { table { width: 100%; }' + 
-                        'th, td { font-size: 12px; padding: 5px; }' + 
-                        '.table-responsive {margin: 0 auto; padding: 5px 0}}' + 
-                        '.header { font-size: 18px; font-weight: bold; text-align: center; }' +
-                        '</style>');
-                        newWindow.document.write('</head><body>');
-                        newWindow.document.write('<h2 class="header">Transaction Summary</h2>');
-                        newWindow.document.write(tableContent);
-                        newWindow.document.write('</body></html>');
-                        newWindow.document.close();
-                        newWindow.print();
+                        // Get the current filtered table data
+                        const filter = document.querySelector('.btns button.clicked') ? document.querySelector('.btns button.clicked').getAttribute('data-filter') : 'all';
+                        
+                        //AJAX request to fetch the filtered table data for printing
+                        const xhr = new XMLHttpRequest();
+                        xhr.open('POST', '/laundry_system/main/sales_report/sales_config/transaction_summary.php', true);
+                        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                        
+                        xhr.onload = function() {
+                            if (this.status === 200) {
+                                const response = JSON.parse(this.responseText);
+                                
+                                // table content with the returned data
+                                var tableContent = `
+                                    <table id="table_summary">
+                                        <thead>
+                                            <tr>
+                                                <th>Transaction ID</th>
+                                                <th>Request Date</th>
+                                                <th>Customer Order ID</th>
+                                                <th>Customer Name</th>
+                                                <th>Laundry Service Option</th>
+                                                <th>Laundry Category Option</th>
+                                                <th>Price</th>
+                                                <th>Weight</th>
+                                                <th>Service Option</th>
+                                                <th>Laundry Cycle</th>
+                                                <th>Service Fee</th>
+                                                <th>Total Amount</th>
+                                                <th>Order Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${response.table_data}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="10" style="text-align: right;"><strong>Total Revenue:</strong></td>
+                                                <td colspan="2"><strong>₱${response.total_revenue}</strong></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>`;
+                                
+                                // Open a new window for printing
+                                var newWindow = window.open('', '', 'height=600,width=800');
+                                newWindow.document.write('<html><head><title>Transaction_Summary</title>');
+                                newWindow.document.write('<style>' +
+                                    'table {' + 
+                                    'width: 95%;' + 
+                                    'border-collapse: collapse; margin: 20px auto;}' + 
+                                    'th, td { border: 1px solid black; padding: 5px; text-align: left; }' + 
+                                    '@media print { ' +
+                                    '#table_summary { width: 95%; border-collapse: collapse; margin: 0 auto;}' + 
+                                    'th, td { font-size: 11px; padding: 5px; }' + 
+                                    '.table-responsive { margin: 0 auto; padding: 5px 5px; }' +
+                                    '}' + 
+                                    '.header { font-size: 16px; font-weight: bold; text-align: center; margin-top: 20px; }' +
+                                    '</style>');
+                                newWindow.document.write('</head><body>');
+                                newWindow.document.write('<h2 class="header">Transaction Summary</h2>');
+                                newWindow.document.write(tableContent);
+                                newWindow.document.write('</body></html>');
+                                newWindow.document.close();
+                                
+                                // Trigger the print
+                                newWindow.print();
+                            }
+                        };
+                        
+                        // Send the filter to get the table data for the selected filter
+                        xhr.send('filter=' + filter + '&print_all=true');
                     }
 
+                    //dynamic search bar
+ $(document).ready(function(){
+                        $("#filter_transac").on("keyup", function() {
+                            var value = $(this).val().toLowerCase();
+                            $("#transaction-table-body tr").filter(function() {
+                                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                            });
+                        });
+                    });
                 </script>
-            </div>
+            </div> <!---END OF TABLE CONTAINER-->
             
-            <?php
-                $conn->close(); // Close the connection
-            ?>
-            
-        </div>
-    </div>
+        </div> <!---end of main-->
+    </div> <!--end of wrapper---->
 </body>
     
     <!--JAVASCRIPT-->

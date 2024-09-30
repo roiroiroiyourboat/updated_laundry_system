@@ -182,7 +182,7 @@ a.sidebar-link:hover {
   flex-direction: row;
   justify-content: center; 
   gap: 1rem;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   flex-wrap: wrap;
   width: 100%;
 }
@@ -261,8 +261,28 @@ a.sidebar-link:hover {
   margin: 10px 0; 
 }
 
-.table-container .btn-light {
+.table-container .btn-info {
   margin-left: auto;
+}
+
+/*search bar*/
+.search_bar {
+  position: relative; 
+}
+
+.search_bar .form-control {
+  padding-left: 38px; 
+}
+
+.search_bar .form-control::placeholder {
+  color: #aaa;
+}
+
+.search_bar .form-control {
+  background-image: url('/laundry_system/main/icons/search-regular-24.png'); 
+  background-repeat: no-repeat;
+  background-position: 10px center; 
+  background-size: 20px 20px; 
 }
 
 @media (max-width: 768px) {
