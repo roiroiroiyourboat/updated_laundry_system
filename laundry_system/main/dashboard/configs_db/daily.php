@@ -5,7 +5,6 @@
 
     $conn = new mysqli('localhost', 'root', '', 'laundry_db');
 
-    // Check connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     }
@@ -65,10 +64,9 @@
         $chartData['borderColors'][] = $color;
     }
 
-    // Close connection
     $conn->close();
 
-    // Return data as JSON
+    //rerun data as JSON
     header('Content-Type: application/json');
     echo json_encode($chartData);
 ?>

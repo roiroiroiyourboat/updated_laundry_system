@@ -5,9 +5,9 @@
         die("Connection failed: " . $conn->connect_error);
     }
 
-    $filter = isset($_POST['filter']) ? $_POST['filter'] : 'all';
-
     $date_condition = '';
+    $filter = $_POST['filter'] ?? 'all'; //check if filter is set, if not use default 'all' 
+
     switch ($filter) {
         case 'daily':
             $date_condition = "DATE(sr.service_request_date) = CURDATE()";
@@ -22,7 +22,10 @@
             $date_condition = "YEAR(sr.service_request_date) = YEAR(CURDATE())";
             break;
         case 'all':
-            $date_condition = '1'; // no condition
+            $date_condition = '1'; 
+            break;
+        default:
+            $date_condition = '1';  
             break;
     }
 
@@ -31,7 +34,7 @@
     $page = isset($_POST['page']) ? (int)$_POST['page'] : 1;
     $offset = ($page - 1) * $records_per_page;
 
-    // Get total records
+    // total records
     $total_query = "SELECT COUNT(DISTINCT t.transaction_id) AS total
                     FROM transaction t
                     JOIN service_request sr ON t.request_id = sr.request_id
@@ -45,7 +48,7 @@
     $total_records = $total_row['total'];
     $total_pages = $print_all ? 1 : ceil($total_records / $records_per_page); //this handle total pages
 
-    // Query to fetch filtered transactions
+    //query to fetch filtered transactions
     $query = "SELECT DISTINCT t.transaction_id, sr.service_request_date, c.customer_name, sr.laundry_service_option, sr.laundry_category_option,
                     sr.price, sr.weight, t.service_option_name, t.laundry_cycle, (t.delivery_fee + t.rush_fee) AS service_fee, 
                     t.total_amount, sr.order_status, sr.customer_order_id
@@ -63,7 +66,7 @@
         die("Error fetching transactions: " . $conn->error);
     }
 
-    // Query to sum total revenue
+    //sum total revenue
     $sum_query = "SELECT SUM(total_revenue) AS total_revenue
                 FROM (
                     SELECT SUM(DISTINCT t.total_amount) AS total_revenue
@@ -79,7 +82,7 @@
     $sum_row = $sum_result->fetch_assoc();
     $total_revenue = number_format($sum_row['total_revenue'], 2);
 
-    // Building the table data
+    //creating the table data
     $table_data = '';
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {

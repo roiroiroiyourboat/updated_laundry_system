@@ -134,13 +134,12 @@
                         <?php 
                             $conn = new mysqli('localhost', 'root', '', 'laundry_db');
 
-                            // Check connection
                             if ($conn->connect_error) {
                                 echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
                                 exit;
                             }
 
-                            // query to count pick up requests for today
+                            //query to count pick up requests for today
                             $qry = "
                                 SELECT COUNT(DISTINCT sr.customer_id) AS total_requests
                                 FROM service_request sr
@@ -151,19 +150,15 @@
                             ";
                             $qry_run = $conn->query($qry);
 
-                            // Check for query errors
                             if (!$qry_run) {
                                 echo json_encode(['status' => 'error', 'message' => 'Query failed: ' . $conn->error]);
                                 exit;
                             }
 
-                            // Fetch the result
                             $row = $qry_run->fetch_assoc();
 
-                            // Display the count of pick-up requests
                             echo '<h2>' . $row['total_requests'] . '</h2>';
                             
-                            // Close the connection
                             $conn->close();
                         ?>
                         </p>
@@ -175,7 +170,6 @@
                         <?php 
                             $conn = new mysqli('localhost', 'root', '', 'laundry_db');
 
-                            // Check connection
                             if ($conn->connect_error) {
                                 echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
                                 exit;
@@ -193,19 +187,15 @@
 
                             $qry_run = $conn->query($qry);
 
-                            // Check for query errors
                             if (!$qry_run) {
                                 echo json_encode(['status' => 'error', 'message' => 'Query failed: ' . $conn->error]);
                                 exit;
                             }
 
-                            // Fetch the result
                             $row = $qry_run->fetch_assoc();
 
-                            // Display the count of pick-up requests
                             echo '<h2>' . $row['total_requests'] . '</h2>';
-                            
-                            // Close the connection
+  
                             $conn->close();
                         ?>
                         </h5>
@@ -217,7 +207,6 @@
                         <?php 
                             $conn = new mysqli('localhost', 'root', '', 'laundry_db');
 
-                            // Check connection
                             if ($conn->connect_error) {
                                 echo json_encode(['status' => 'error', 'message' => 'Database connection failed']);
                                 exit;
@@ -235,19 +224,18 @@
 
                             $qry_run = $conn->query($qry);
 
-                            // Check for query errors
+                            //check for query errors
                             if (!$qry_run) {
                                 echo json_encode(['status' => 'error', 'message' => 'Query failed: ' . $conn->error]);
                                 exit;
                             }
 
-                            // Fetch the result
+                            //fetch result
                             $row = $qry_run->fetch_assoc();
 
-                            // Display the count of rush requests
+                            //display the count of rush requests
                             echo '<h2>' . $row['total_requests'] . '</h2>';
-                            
-                            // Close the connection
+
                             $conn->close();
                         ?>
                         </h5>
@@ -273,275 +261,12 @@
                         <div class="chart" id="monthlyChart">
                             <h4>Service Requests in Month</h4>
                             <canvas id="monthchart"></canvas>
-                            <?php
-                                // Connect to database
-                                $conn = new mysqli('localhost', 'root', '', 'laundry_db');
-
-                                // Check connection
-                                if ($conn->connect_error) {
-                                    die("Connection failed: " . $conn->connect_error);
-                                }
-
-                                // query to fetch current month's orders by service option and category //$selectedMonth AND YEAR(service_request_datetime) = $currentYear
-                                $query = "
-                                    SELECT 
-                                        laundry_service_option,
-                                        laundry_category_option,
-                                        COUNT(*) AS order_count
-                                    FROM 
-                                        service_request
-                                    WHERE 
-                                        MONTH(service_request_date) =  MONTH(CURDATE())
-                                        AND order_status = 'completed'
-                                    GROUP BY 
-                                        laundry_service_option, 
-                                        laundry_category_option
-                                ";
-
-                                $result = $conn->query($query);
-
-                                if (!$result) {
-                                    die("Query failed: " . $conn->error);
-                                }                           
-
-                                // array to store the data for the chart
-                                $labels = [];
-                                $data = [];
-                                $backgroundColors = [];
-                                $borderColors = [];
-
-                                // base colors for services
-                                $serviceColors = [
-                                    'Wash/Dry/Fold' => 'rgba(255, 99, 132, ',  // Red
-                                    'Wash/Dry/Press' => 'rgba(54, 162, 235, ',  // Blue
-                                    'Dry Only' => 'rgba(255, 206, 86, ',     // Yellow
-                                ];
-
-                                // opacity levels for categories
-                                $categoryShades = [
-                                    'Clothes/Table Napkin/Pillowcase' => '0.8)',  // Slightly lighter
-                                    'Bedsheet/Table Cloths/Curtain' => '0.6)',    // Lighter
-                                    'Comforter/Bath towel' => '0.4)',             // Even lighter
-                                ];
-
-                                if ($result && $result-> num_rows > 0) {
-                                    while ($row = $result->fetch_assoc()) {
-                                        $fullLabel = $row['laundry_service_option'] . ' - ' . $row['laundry_category_option'];
-                                        $labels[] = $fullLabel;
-                                        $data[] = $row['order_count'];
-                                        $baseColor = $serviceColors[$row['laundry_service_option']] ?? 'rgba(0, 0, 0, '; // default base color
-                                        $shade = $categoryShades[$row['laundry_category_option']] ?? '0.3)';
-                                        $color = $baseColor . $shade;
-                                        $backgroundColors[] = $color;
-                                        $borderColors[] = $color;
-                                    }
-                                } else {
-                                    $chartData['labels'][] = 'No data';
-                                    $chartData['data'][] = 0;
-                                    $chartData['backgroundColors'][] = 'rgba(0, 0, 0, 0.1)';
-                                    $chartData['borderColors'][] = 'rgba(0, 0, 0, 0.1)';
-                                }
-
-                                // Close connection
-                                $conn->close();
-                            ?>
-   
-                            <script>                               
-                                document.addEventListener("DOMContentLoaded", function() {
-                                    const ctx = document.getElementById('monthchart').getContext('2d');
-                                    const monthchart = new Chart(ctx, {
-                                        type: 'doughnut',
-                                        data: {
-                                            labels: <?php echo json_encode($labels); ?>,
-                                            datasets: [{
-                                                label: 'Orders in the Month',
-                                                data: <?php echo json_encode($data); ?>,
-                                                backgroundColor: <?php echo json_encode($backgroundColors); ?>,
-                                                borderColor: <?php echo json_encode($borderColors); ?>,
-                                                borderWidth: 1
-                                            }]
-                                        },
-                                        options: {
-                                            responsive: true,
-                                            plugins: {
-                                                legend: {
-                                                    position: 'bottom',
-                                                },
-                                                title: {
-                                                    display: true,
-                                                    text: 'Monthly Requests by Service and Category',
-                                                    font: {
-                                                        size: 14
-                                                    }
-                                                },
-                                                tooltip: {
-                                                    callbacks: {
-                                                        label: function(tooltipItem) {
-                                                            let label = tooltipItem.label || '';
-                                                            let value = tooltipItem.raw || '';
-                                                            return [
-                                                                `${label}: ${value}`, 
-                                                                `Requests Count: ${value}` 
-                                                            ];
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    });
-                                });
-                            </script>
                         </div>
 
                         <!--------------------------------YEAR CHART----------------------------->
                         <div class="chart" id="yearlyChart" >
                             <h4>Service Requests in Year</h4>
                             <canvas id="yearchart"></canvas>
-
-                            <?php
-                                // Connect to database
-                                $servername = "localhost";
-                                $username = "root";
-                                $password = "";
-                                $dbname = "laundry_db"; 
-
-                                $conn = new mysqli($servername, $username, $password, $dbname);
-
-                                // Check connection
-                                if ($conn->connect_error) {
-                                    die("Connection failed: " . $conn->connect_error);
-                                }
-
-                                // Query to fetch current year orders by service option and category
-                                $query = "
-                                    SELECT 
-                                        laundry_service_option,
-                                        laundry_category_option,
-                                        COUNT(*) AS order_count
-                                    FROM 
-                                        service_request
-                                    WHERE 
-                                        YEAR(service_request_date) = YEAR(CURDATE())
-                                        AND order_status = 'completed'
-                                    GROUP BY 
-                                        laundry_service_option, 
-                                        laundry_category_option
-                                ";
-
-                                $result = $conn->query($query);
-
-                                // Check if query was successful
-                                if (!$result) {
-                                    die("Query failed: " . $conn->error);
-                                }
-
-                                // Service colors and category shades
-                                $serviceColors = [
-                                    'Wash/Dry/Fold' => 'rgba(255, 99, 132, ',  // Red
-                                    'Wash/Dry/Press' => 'rgba(54, 162, 235, ',  // Blue
-                                    'Dry Only' => 'rgba(255, 206, 86, ',     // Yellow
-                                ];
-
-                                $categoryShades = [
-                                    'Clothes/Table Napkin/Pillowcase' => '0.8)',  // Slightly lighter
-                                    'Bedsheet/Table Cloths/Curtain' => '0.6)',    // Lighter
-                                    'Comforter/Bath towel' => '0.4)',             // Even lighter
-                                ];
-
-                                // Function to generate a random RGBA color
-                                function getRandomColor() {
-                                    $r = rand(0, 255);
-                                    $g = rand(0, 255);
-                                    $b = rand(0, 255);
-                                    return "rgba($r, $g, $b, ";
-                                }
-
-                                // arrays to store data
-                                $labels = [];
-                                $data = [];
-                                $backgroundColors = [];
-                                $borderColors = [];
-
-                                // Fetch data from query
-                                while ($row = $result->fetch_assoc()) {
-                                    $service = $row['laundry_service_option'];
-                                    $category = $row['laundry_category_option'];
-                                    $labels[] = $service . ' - ' . $category;
-                                    $data[] = $row['order_count'];
-
-                                    // Check if the service exists in the serviceColors array
-                                    if (!isset($serviceColors[$service])) {
-                                        // If the service is new, assign a random color
-                                        $serviceColors[$service] = getRandomColor();
-                                    }
-
-                                    // If the category doesn't exist in categoryShades, assign a default shade
-                                    $shade = isset($categoryShades[$category]) ? $categoryShades[$category] : '1)';
-
-                                    // Assign colors
-                                    $backgroundColors[] = $serviceColors[$service] . $shade;
-                                    $borderColors[] = $serviceColors[$service] . '1)';  
-                                }
-
-                                // Close connection
-                                $conn->close();
-                            ?>
-
-
-                            <script>
-                                document.addEventListener("DOMContentLoaded", function() {
-                                    const labels = <?php echo json_encode($labels); ?>;
-                                    const data = {
-                                        labels: labels,
-                                        datasets: [{
-                                            label: 'Requests in Year',
-                                            data: <?php echo json_encode($data); ?>,
-                                            backgroundColor: <?php echo json_encode($backgroundColors); ?>,
-                                            borderColor: <?php echo json_encode($borderColors); ?>,
-                                            borderWidth: 5,
-                                            fill: true, 
-                                        }]
-                                    };
-
-                                    const config = {
-                                        type: 'line',
-                                        data: data,
-                                        options: {
-                                            responsive: true,
-                                            plugins: {
-                                                legend: {
-                                                    position: 'top',
-                                                },
-                                                title: {
-                                                    display: true,
-                                                    text: 'Yearly Requests by Service and Category',
-                                                    font: {
-                                                        size: 14
-                                                    }
-                                                },
-                                            },
-                                            scales: {
-                                                x: {
-                                                    ticks: {
-                                                        callback: function(value, index, values) {
-                                                            // truncate labels if they are longer than 15 characters
-                                                            return value.length > 15 ? value.substr(0, 15) + '...' : value;
-                                                        }
-                                                    }
-                                                },
-                                                y: {
-                                                    beginAtZero: true
-                                                }
-                                            }
-                                        }
-                                    };
-
-                                    var yearchart = new Chart(
-                                        document.getElementById('yearchart'),
-                                        config
-                                    );
-                                });
-                            </script>
                         </div>
 
                     </div> <!--end of charts-->   
@@ -575,15 +300,8 @@
                     </div>
 
                     <?php
-                        $servername = "localhost";
-                        $username = "root";
-                        $password = "";
-                        $dbname = "laundry_db";
+                        $conn = new mysqli('localhost', 'root', '', 'laundry_db');
 
-                    // Create connection
-                        $conn = new mysqli($servername, $username, $password, $dbname);
-
-                    // Check connection
                         if ($conn->connect_error) {
                             die("Connection failed: " . $conn->connect_error);
                         }
@@ -594,8 +312,7 @@
                         if (!$result) {
                             die("Query failed: " . $conn->error);
                         }
-
-                                    
+                
                     $events = array();
 
                     while ($row = $result->fetch_assoc()) {
@@ -606,7 +323,7 @@
                         );
                     }
 
-                    // Close connection
+                    //close connection
                     $conn->close();
                     ?>
 
@@ -636,8 +353,7 @@
                             "November",
                             "December",
                         ];
-
-                        // Function to add days in days with class day and prev-date next-date on previous month and next month days and active on today
+                        
                         function initCalendar() {
                             const firstDay = new Date(year, month, 1);
                             const lastDay = new Date(year, month + 1, 0);
@@ -656,8 +372,7 @@
                             }
 
                             for (let i = 1; i <= lastDate; i++) {
-                                // Check if event is present on that day
-                                
+                                //check if event is present on that day
                                 const eventDate = new Date(year, month, i);
                                 const eventsForDay = <?php echo json_encode($events); ?>.filter((event) => {
                                     const eventDateTime = new Date(event.start);
@@ -665,7 +380,7 @@
                                 });
 
                                 if (eventsForDay.length > 0) {
-                                    days += `<div class="day has-event mark">${i}</div>`; // Add the mark class
+                                    days += `<div class="day has-event mark">${i}</div>`; //add the mark
                                 } else if (
                                     i === new Date().getDate() &&
                                     year === new Date().getFullYear() &&
@@ -717,11 +432,12 @@
                                 const eventDate = new Date(event.start);
                                 if (eventDate.getDate() === date.getDate() && eventDate.getMonth() === date.getMonth() && eventDate.getFullYear() === date.getFullYear()) {
                                     eventList += `
-                                        <hr><div class="event">
+                                        <div class="event">
                                         <h4><li>${event.title}</li></h4>
-                                        <p>Start: ${event.start}</p>
-                                        <p>End: ${event.end}</p>
-                                        </div></hr>
+                                        <span>Start: ${event.start}</span>
+                                        <span>End: ${event.end}</span>
+                                        </div>
+                                        <hr style="border: 1px solid #b8c1ec; margin: 5px 0;"> 
                                     `;
                                 }
                             });
