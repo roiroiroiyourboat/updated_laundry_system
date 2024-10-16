@@ -498,16 +498,16 @@ $(document).ready(function() {
             if (weightValue < minWeight) {
                 swal.fire({
                     title: "Minimum Weight!",
-                    text: `The minimum weight for laundry is ${minWeight} kilos. Do you want to proceed with a 5 kilo order?`,
+                    text: `The minimum weight for laundry is ${minWeight} kilos. Do you want to proceed with a ${minWeight} kilo order?`,
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Yes',
                     cancelButtonText: 'No'
-                }).then((result) => {
+                }).then((result) => {   
                     if (result.isConfirmed) {
-                        validateAndSubmitOrder(5);
+                        validateAndSubmitOrder(minWeight);
                     } else {
                         $('#form_id').find('input[type="text"], input[type="number"], input[type="tel"], select').val('');
                     }
@@ -750,7 +750,7 @@ $(document).ready(function() {
         newWindow.document.write('<style>' +
             '@media print {' +
                 '@page {' +
-                    'size: 80mm;' + //size of thermal paper
+                    'size: 58mm;' + //size of thermal paper
                     'margin: 0;' +
                 '}' +
                 
@@ -760,7 +760,7 @@ $(document).ready(function() {
                     'background-color: transparent;' +
                     'padding: 10px;' + 
                     'width: 100%;' +
-                    'max-width: 80mm;' +  
+                    'max-width: 58mm;' +  
                 '}' + 
 
                 'hr{' + 
@@ -775,7 +775,7 @@ $(document).ready(function() {
                 '}' +
                 
                 '#services-table {' +
-                    'width: 70mm;' + 
+                    'width: 50mm;' + 
                     'border-collapse: collapse;' +
                     'margin: 0 auto;' + 
                 '}' +
@@ -784,7 +784,7 @@ $(document).ready(function() {
                     'border: 1px solid black;' +
                     'padding: 2px;' + 
                     'text-align: left;' +
-                    'font-size: 10px;' + 
+                    'font-size: 8px;' + 
                 '}' +
         
                 'body {' +

@@ -370,7 +370,7 @@ $conn->close();
                     <h6>Address: <span id="invoice_address"></span></h6>
                     
                     <div class="table-responsive">
-                        <span>Service Details</span>
+                        <h5>Service Details</h5>
                         <table class="table table-bordered" id="services-table">
                             <thead>
                                 <tr>

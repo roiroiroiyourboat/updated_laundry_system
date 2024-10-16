@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDayChart(); //update day
     });
 
-    //weekly
+    // //weekly
     populateYears();
     populateMonths();
 
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!response.ok) {  //check if the response status is OK
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.json();  // If response is OK, parse the JSON
+            return response.json();  //parse the JSON
         })
         .then(data => {
             const ctx = document.getElementById('daychart').getContext('2d');
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function populateMonths() {
         const chooseMonth = document.getElementById('chooseMonth');
-        chooseMonth.innerHTML = ''; // Clear previous options
+        chooseMonth.innerHTML = ''; //to clear previous options
 
         const months = [
             "January", "February", "March", "April", "May", "June",
@@ -220,14 +220,14 @@ document.addEventListener('DOMContentLoaded', function() {
             chooseMonth.appendChild(option);
         });
 
-        populateWeeks(); // Update weeks after months are populated
+        populateWeeks(); //update weeks after months are populated
     }
 
     function populateWeeks() {
         const chooseYear = document.getElementById('chooseYear').value;
         const chooseMonth = document.getElementById('chooseMonth').value;
         const chooseWeek = document.getElementById('chooseWeek');
-        chooseWeek.innerHTML = ''; // Clear previous weeks
+        chooseWeek.innerHTML = ''; //clear previous weeks
 
         fetch(`/laundry_system/main/sales_report/sales_config/weeks.php?year=${chooseYear}&month=${chooseMonth}`)
             .then(response => response.json())
@@ -240,11 +240,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     chooseWeek.appendChild(option);
                 });
 
-                // Optionally set the current week as selected
+                //set the current week as selected
                 const currentWeekLabel = getCurrentWeekLabel(chooseYear, chooseMonth);
                 chooseWeek.value = currentWeekLabel;
 
-                // Load data for the selected week
+                //load data for the selected week
                 loadWeekData(currentWeekLabel);
             })
             .catch(error => {
@@ -256,36 +256,48 @@ document.addEventListener('DOMContentLoaded', function() {
         const today = new Date();
         const currentYear = today.getFullYear();
         const currentMonth = today.getMonth() + 1;
-
+    
+        //if the year and month are both not cuurent, default to week 1
         if (year != currentYear || month != currentMonth) {
             return "Week 1";
         }
-
+    
+        //get the first day of the selected month
         const firstDayOfMonth = new Date(year, month - 1, 1);
-
-        //loop throuh weeks in month then find the cuurent data
-        let currentDay = firstDayOfMonth;
+    
+        //start the week calculation with the first day of the month
+        let currentDay = new Date(firstDayOfMonth);
         let weekNumber = 1;
-
+    
+        //loop through each week of the month
         while (currentDay.getMonth() === firstDayOfMonth.getMonth()) {
+            //get the start and end of the current week
             const startOfWeek = new Date(currentDay);
-            startOfWeek.setDate(currentDay.getDate() - currentDay.getDay()); //set sunday
+            startOfWeek.setDate(currentDay.getDate() - currentDay.getDay()); //set to Sunday (start of week)
+    
             const endOfWeek = new Date(startOfWeek);
-            endOfWeek.setDate(startOfWeek.getDate() + 6);
-
-            //current date is between startOfWeek and endOfWeek, it's the current week
+            endOfWeek.setDate(startOfWeek.getDate() + 6); //set to Saturday (end of the week)
+    
+            //ensure that endOfWeek doesn't exceed the current month
+            if (endOfWeek.getMonth() !== firstDayOfMonth.getMonth()) {
+                endOfWeek.setDate(new Date(year, month, 0).getDate()); //last day of the month
+            }
+    
+            //return the current week number, if the date today is within the current week
             if (today >= startOfWeek && today <= endOfWeek) {
                 return `Week ${weekNumber}`;
             }
-
-            //move to next week
-            currentDay.setDate(endOfWeek.getDate() + 1);
+    
+            //move to the next week
+            currentDay = new Date(endOfWeek);
+            currentDay.setDate(endOfWeek.getDate() + 1); //move to the first day of the next week
             weekNumber++;
         }
-
-        //default week
+       
+        //default to week 1 if no match
         return "Week 1";
     }
+    
 
     function loadWeekData(weekLabel) {
         const year = document.getElementById('chooseYear').value;
@@ -294,13 +306,13 @@ document.addEventListener('DOMContentLoaded', function() {
         //week number from the label
         const weekNumber = weekLabel.split(' ')[1];
         
-        // Calculate the start and end dates of the week
+        //compute the start and end dates of the week
         const startDate = new Date(year, month - 1, (weekNumber - 1) * 7 + 1);
         startDate.setDate(startDate.getDate() - startDate.getDay() + 1);
         const endDate = new Date(startDate);
         endDate.setDate(startDate.getDate() + 6); 
 
-        // Format dates as YYYY-MM-DD
+        //format dates as YYYY-MM-DD
         const start = startDate.toISOString().split('T')[0];
         const end = endDate.toISOString().split('T')[0];
 
@@ -311,7 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 console.log('Chart Data:', data); 
                 
-                // Check if data is valid
+                //check if format is valid
                 if (!data || !data.labels || !data.data) {
                     console.error('Invalid data format');
                     return;
@@ -686,7 +698,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function highlightButton(button) {
-        var buttons = document.querySelectorAll('.btn-secondary');
+        var buttons = document.querySelectorAll('.btn-primary');
         buttons.forEach(function(btn) {
             btn.classList.remove('clicked');
         });
@@ -740,7 +752,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="10" style="text-align: right;"><strong>Total Revenue:</strong></td>
+                                <td colspan="11" style="text-align: right;"><strong>Total Revenue:</strong></td>
                                 <td colspan="2"><strong>₱${response.total_revenue}</strong></td>
                             </tr>
                         </tfoot>

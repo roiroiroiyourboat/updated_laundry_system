@@ -115,12 +115,12 @@
         </aside>
         
         <!-------------MAIN CONTENT------------->
-        <div class="main p-3">
-            <div class="header-con">
-                <h1>
-                    Sales Report
-                </h1>
-            </div>
+        <div class="main-content">
+            <nav>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2>Sales Report</h2>
+                </div>
+            </nav>
 
             <!------------------CHARTS----------------------->
             <div class="charts-container">
@@ -128,9 +128,9 @@
                         <!----------------------------ORDERS IN DAY----------------------------------->
                         <div class="chart" id="dailyChart">
                             <div class="chart-header">
-                                 <h5>Service Requests <br> in Day</h5>
-                                 <button id="Btn" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#dayModal">
-                                    <i class='bx bx-menu'></i></button>
+                                <h5>Service Requests <br> in Day</h5>
+                                <button id="Btn" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#dayModal">
+                                <i class='bx bx-menu'></i></button>
                             </div>
                            
                             <input type="date" class="form-control" id="chooseDate" value="">
@@ -181,7 +181,7 @@
                             
                             <!-- Modal -->
                             <div class="modal fade" id="weekModal" tabindex="-1" aria-labelledby="weekModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
+                                <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="weekModalLabel">Weekly Service Requests</h5>
@@ -219,7 +219,7 @@
 
                             <!-- Modal -->
                             <div class="modal fade" id="monthModal" tabindex="-1" aria-labelledby="monthModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-lg">
+                                <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="monthModalLabel">Monthly Service Requests</h5>
@@ -282,19 +282,19 @@
             <div class="table-container">
                 <h3>Transaction Summary</h3>
                 <div class="btns">
-                    <button class="btn btn-secondary" data-filter="daily" id="btnDaily">
+                    <button class="btn btn-primary" data-filter="daily" id="btnDaily">
                         <img src="/laundry_system/main/icons/calendar-regular-24.png" alt="Calendar Icon">    
                         Daily
                     </button>
-                    <button class="btn btn-secondary" data-filter="weekly" id="btnWeekly">
+                    <button class="btn btn-primary" data-filter="weekly" id="btnWeekly">
                         <img src="/laundry_system/main/icons/calendar-regular-24.png" alt="Calendar Icon">    
                         Weekly
                     </button>
-                    <button class="btn btn-secondary" data-filter="monthly" id="btnMonthly">
+                    <button class="btn btn-primary" data-filter="monthly" id="btnMonthly">
                         <img src="/laundry_system/main/icons/calendar-regular-24.png" alt="Calendar Icon">    
                         Monthly
                     </button>
-                    <button class="btn btn-secondary" data-filter="yearly" id="btnYearly">
+                    <button class="btn btn-primary" data-filter="yearly" id="btnYearly">
                         <img src="/laundry_system/main/icons/calendar-regular-24.png" alt="Calendar Icon">
                         Yearly
                     </button>
@@ -314,7 +314,7 @@
                             <tr>
                                 <th scope="col">Transaction ID</th>
                                 <th scope="col">Date</th>
-                                <th scope="col">Order/Session ID</th>
+                                <th scope="col">Session ID</th>
                                 <th scope="col">Customer Name</th>
                                 <th scope="col">Service</th>
                                 <th scope="col">Category</th>
@@ -330,7 +330,7 @@
                         <tbody class="table-group-divider" id="transaction-table-body"></tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="10" style="text-align: right;"><strong>Total Revenue:</strong></td>
+                                <td colspan="11" style="text-align: right;"><strong>Total Revenue:</strong></td>
                                 <td colspan="2"><strong>₱<span id="total-revenue">0.00</span></strong></td>
                             </tr>
                         </tfoot>

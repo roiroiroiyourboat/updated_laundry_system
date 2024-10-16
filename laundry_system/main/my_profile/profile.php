@@ -109,10 +109,12 @@
         </aside>
 
             <!---------MAIN CONTENT------------->
-            <div class="main p-3">
-                <div class="header-con">
-                    <h1>My Profile</h1>
-                </div>
+            <div class="main-content">
+                <nav>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2>Profile</h1>
+                    </div>
+                </nav>
 
                 <div class="user_container" id="user_container">
                     <form action="" method="post" class="user_form" id="user_form">
@@ -151,6 +153,7 @@
                     </form>
                 </div>
 
+                <!----------------------EDIT USER INFO------------------------------->
                 <div class="edit_user" id="edit_user">
                     <form action="" method="post" class="edit_user_form" id="edit_user_form">
                         <div class="header">
@@ -208,7 +211,7 @@
                         </div>
                         
                         <div class="text-center">
-                            <button type="button" class="btn btn-light" id="btnBack">Back</button>
+                            <button type="button" class="btn btn-outline-secondary" id="btnBack">Back</button>
                             <button type="button" class="btn btn-primary" id="btnSaveChanges">Save Changes</button>
                         </div>
                     </form>

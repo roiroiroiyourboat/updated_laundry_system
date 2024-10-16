@@ -1,11 +1,41 @@
+<?php
+$conn = new mysqli('localhost', 'root', '', 'laundry_db');
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+//fetch the rows for wash/dry/fold
+$sql = "SELECT scp.price, c.laundry_category_option, s.laundry_service_option
+        FROM service_category_price scp
+        JOIN category c ON scp.category_id = c.category_id
+        JOIN service s ON scp.service_id = s.service_id
+        WHERE s.service_id = 2";
+
+$result = $conn->query($sql); 
+
+$prices = [];
+if ($result) {
+    while ($row = $result->fetch_assoc()) { 
+        $prices[] = $row; 
+    }
+} else {
+    die("Query Failed: " . $conn->error); 
+}
+
+//close connection
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archived</title>
+    <title>Settings</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="archived.css">
+    <link rel="stylesheet" href="categ2.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
@@ -106,20 +136,59 @@
                 </a>
             </div>
         </aside>
-            
-            <!-------------MAIN CONTENT------------->
-            <div class="main-content">
-                <nav>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2>Archived</h2>
-                    </div>
-                </nav>
+        
+        <!-------------MAIN CONTENT------------->
+        <div class="main-content">
+            <nav>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2>Settings</h2>
+                </div>
+
+                <div class="text" style="text-align: center;" name="category">
+                    <h2>Wash/Dry/Press</h2>
+                </div>
+            </nav>
+
+            <div class="box">
+                <form action="edit2.php" method="POST">
+                    <button type="submit" class="btn btn-success" id="updatePriceButton">
+                    <i class='bx bxs-user-plus'></i>Update Price</button>
+                </form>
             </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered text-center">
+                    <thead>
+                        <tr class="bg-dark text-white">
+                            <th>Category Option</th>
+                            <th>Service Option</th>
+                            <th>Prices</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                            foreach ($prices as $row) {
+                            $laundry_category_option = $row['laundry_category_option'];
+                            $laundry_service_option = $row['laundry_service_option'];
+                            $price = $row['price'];
+                                        
+                            echo '<tr>
+                                  <th scope="row">' . $laundry_category_option . '</th>
+                                  <td>' . $laundry_service_option . '</td>
+                                  <td>' . $price . '</td>
+                                  </tr>'; 
+                                }
+                            ?>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
-    
+    </div>
+
 </body>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="archived.js"></script>
+    <script type="text/javascript" src="categ2.js"></script>
 
 </html>

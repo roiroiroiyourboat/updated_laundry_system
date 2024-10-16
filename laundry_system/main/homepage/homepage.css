@@ -826,6 +826,10 @@ footer > * {
     border-collapse: collapse;
 }
 
+.print_invoice h6 {
+    font-weight: 600;
+}
+
 .print_invoice .logo_header {
     margin-bottom: 5px;
 }

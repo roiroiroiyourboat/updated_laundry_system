@@ -120,12 +120,12 @@
         </aside>
         
         <!-------------MAIN CONTENT------------->
-        <div class="main p-3">
-            <div class="header-con">
-                <h1>
-                   Dashboard
-                </h1>
-            </div>
+        <div class="main-content">
+            <nav>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2>Dashboard</h2>
+                </div>
+            </nav>
                  <!----CARDS FOR SERVICE TYPE ORDERS (RUSH/PICK UP/DELIVERY) ---->
                 <div class="cards">
                     <div class="card card-body p-3">

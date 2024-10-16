@@ -1,3 +1,79 @@
+<?php
+$conn = new mysqli('localhost', 'root', '', 'laundry_db');
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Retrieve current settings from the database
+$sql = "SELECT min_kilos, delivery_day FROM settings";
+$result = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($result);
+
+$sqlServiceOption = "SELECT price FROM service_option_price WHERE service_option_type = 'Delivery'";
+$resultDelivery = mysqli_query($conn, $sqlServiceOption);
+$rowDelivery = mysqli_fetch_assoc($resultDelivery);
+$delivery_charge = $rowDelivery['price'];
+
+$sqlServiceOption = "SELECT price FROM service_option_price WHERE service_option_type = 'Rush'";
+$resultPickup = mysqli_query($conn, $sqlServiceOption);
+$rowPickup = mysqli_fetch_assoc($resultPickup);
+$rush_charge = $rowPickup['price'];
+
+$minimum_kilos = $row['min_kilos'];
+$delivery_day = $row['delivery_day'];
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $minimum_kilos = $_POST['min_kilos'];
+    $delivery_day = $_POST['delivery_day'];
+    $delivery_charge = $_POST['delivery_charge'];
+    $rush_charge = $_POST['rush_charge'];
+
+    $success = true;
+    $errors = "";
+
+    //to update min kilos and delivery period
+    $sql = "UPDATE settings SET min_kilos='$minimum_kilos', delivery_day='$delivery_day'";
+    $result = mysqli_query($conn, $sql);
+    if (!$result) {
+        $success = false;
+        $errors .= "Error updating settings: " . mysqli_error($conn) . "\n";
+    }
+
+    //to update delivery fee
+    $sql = "UPDATE service_option_price SET price='$delivery_charge' WHERE service_option_type='Delivery'";
+    $result = mysqli_query($conn, $sql);
+    if (!$result) {
+        $success = false;
+        $errors .= "Error updating delivery charge: " . mysqli_error($conn) . "\n";
+    }
+
+    //to update rush fee
+    $sql = "UPDATE service_option_price SET price='$rush_charge' WHERE service_option_type='Rush'";
+    $result = mysqli_query($conn, $sql);
+    if (!$result) {
+        $success = false;
+        $errors .= "Error updating rush charge: " . mysqli_error($conn) . "\n";
+    }
+
+    // Return a JSON response to the frontend
+    if ($success) {
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Settings updated successfully!'
+        ]);
+    } else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => $errors
+        ]);
+    }
+    exit;
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +81,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Settings</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="settings.css">
     <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -106,14 +183,94 @@
                 </a>
             </div>
         </aside>
-        
+
         <!-------------MAIN CONTENT------------->
-        <div class="main p-3">
-            <div class="header-con">
-                <h1>
-                   Settings
-                </h1>
+        <div class="main-content">
+            <nav>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2>Settings</h2>
+                </div>
+            </nav>
+
+            <div class="buttons">
+                <div class="wdf_button">
+                    <a href="/laundry_system/main/settings/categ1/categ1.php" class="button" id="wdfBtn">Wash/Dry/Fold</a>
+                </div>
+                    
+                <div class="wdp_button">
+                    <a href="/laundry_system/main/settings/categ2/categ2.php" class="button" id="wdpBtn">Wash/Dry/Press</a>
+                </div>
+                
+                <div class="dry_button">
+                    <a href="/laundry_system/main/settings/categ3/categ3.php" class="button" id="dryBtn">Dry only</a>
+                </div>       
+            </div> 
+
+            <div class="form-settings" id="mainForm">
+                <form class="form-container" id="settingsForm" method="POST">
+                    <label for="min_kilos"><b>Minimum Kilos:</b></label>
+                    <input type="number" class="form-control" id="min_kilos" name="min_kilos" value="<?php echo $minimum_kilos ?>">
+
+                    <label for="delivery_date"><b>Delivery Period:</b></label>
+                    <input type="number" class="form-control" id="delivery_day" name="delivery_day" value="<?php echo $delivery_day ?>">
+
+                    <label for="delivery_charge"><b>Delivery Fee: </b></label>
+                    <input type="number" class="form-control" id="delivery_charge" name="delivery_charge" value="<?php echo $delivery_charge ?>">
+                    
+                    <label for="rush_charge"><b>Rush Fee:</b></label>
+                    <input type="number" class="form-control" id="rush_charge" name="rush_charge" value="<?php echo $rush_charge ?>">
+
+                    <button type="submit" class="btn btn-success" id="submit_btn" name="submit">Submit</button>
+                </form>
             </div>
+
+            <script>
+                const form = document.getElementById('settingsForm');
+
+                //form submission
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault(); //prevent the default form submission behavior
+
+                    //collect form data
+                    const formData = new FormData(form);
+
+                    //send form data using AJAX request
+                    fetch('<?php echo $_SERVER['PHP_SELF']; ?>', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: data.message,
+                                icon: 'success',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: data.message,
+                                icon: 'error',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'An error occurred while submitting the form.',
+                            icon: 'error',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    });
+                });
+            </script>
+
         </div>
     </div>
 

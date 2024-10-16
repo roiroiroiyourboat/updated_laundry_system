@@ -108,12 +108,12 @@
         </aside>
         
         <!-------------MAIN CONTENT------------->
-        <div class="main p-3">
-            <div class="header-con">
-                <h1>
-                   Users
-                </h1>
-            </div>
+        <div class="main-content">
+            <nav>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2>Users</h2>
+                </div>
+            </nav>
 
             <!--OTHER CONTENT-->
         </div>

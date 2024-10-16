@@ -224,6 +224,3 @@ document.addEventListener("DOMContentLoaded", function() {
     .catch(error => console.error('Error fetching chart data:', error));
   
 });
-
-
-//CALENDAR

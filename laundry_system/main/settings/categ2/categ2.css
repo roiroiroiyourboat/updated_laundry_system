@@ -170,137 +170,40 @@ padding: 20px;
 transition: margin-left 0.5s ease; 
 }
 
-/************MAIN CONTENT*************/
-.user_container {
-    position: relative;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    padding-top: 5px;
-}
-
-.user_container .user_form{
-    margin: 5% auto;
-    background: #fff;
+/* table */
+.table-responsive {
     padding: 20px;
-    width: 45%;
-    border-radius: 28px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-}
-
-.user_form i {
-    font-size: 15px;
-}
-
-.user_form img {
-    display: block;
-    margin: 0 auto;
-    width: 100px; 
-    height: 100px; 
-    border-radius: 50%; 
-    
-}
-
-.user_form h4, h3, p {
-    margin: 6px 0;
-}
-
-.user_container .user_form .row {
-    margin: 8px 0;
-}
-
-.user_container .user_form .col {
-    margin-bottom: 8px;
-}
-
-/**********EDIT USER PROFILE**********/
-.edit_user {
-    display: none;
-    position: relative;
-    z-index: 1;
-    left: 0;
-    top: 0;
+  }
+  
+  .table {
     width: 100%;
-    height: 100%;
-    padding-top: 5px;
-}
-
-.edit_user .edit_user_form{
-    margin: 5% auto;
-    background: #fff;
-    padding: 20px;
-    width: 50%;
-    border-radius: 28px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-}
-
-.edit_user .edit_user_form img {
-    display: block;
-    margin: 6px auto;
-    width: 100px; 
-    height: 100px; 
-    border-radius: 50%; 
-}
-
-.edit_user .edit_user_form h4, h3, p {
-    margin: 6px 0;
-}
-
-.edit_user .edit_user_form .row {
-    margin: 8px 0;
-}
-
-.edit_user .edit_user_form .col {
-    margin-bottom: 8px;
-}
-
-.password-wrapper {
-    position: relative;
-}
-
-.password-wrapper .toggle-password {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 1.2rem;
-}
-
-@media (max-width: 768px) {
-    #sidebar {
-        width: 10%;
-        min-width: 50px;
-    }
-    #sidebar.expand {
-        width: 50%;
-        min-width: 250px;
-    }
-
-    .user_container, .edit_user {
-        width: 90%;
-    }
-    .user_container .user_form,  .edit_user .edit_user_form{
-        width: 90%;
+    border-collapse: collapse;
+    border: #b8c1ec;
+    margin: 0;
+  }
+  
+  th, td {
+    border: 1px solid #b8c1ec;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  /*responsiveness */
+  @media (max-width: 768px) {
+    .table {
+      font-size: 0.9rem;
     }
   }
   
   @media (max-width: 480px) {
-    #sidebar {
-      width: 20%;
-      min-width: 50px;
+    .table {
+      font-size: 0.8rem;
     }
-    #sidebar.expand {
-      width: 60%;
-      min-width: 180px;
-    }
-    .user_container, .edit_user{
-      width: 100%;
-    }
-    .user_container .user_form, .edit_user .edit_user_form {
-      width: 100%;
-    }
+  } 
+  
+  .box {
+      display: flex;
+      flex-direction: row;
+      margin: 5px;
+      padding: 0 20px;
   }
