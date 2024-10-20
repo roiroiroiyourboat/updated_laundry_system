@@ -306,7 +306,7 @@
                             die("Connection failed: " . $conn->connect_error);
                         }
 
-                        $query = "SELECT request_id, laundry_service_option, request_date, service_request_date FROM service_request";
+                        $query = "SELECT request_id, laundry_service_option, request_date, service_request_date FROM service_request WHERE order_status = 'completed'";
                         $result = $conn->query($query);
 
                         if (!$result) {
@@ -375,8 +375,9 @@
                                 //check if event is present on that day
                                 const eventDate = new Date(year, month, i);
                                 const eventsForDay = <?php echo json_encode($events); ?>.filter((event) => {
-                                    const eventDateTime = new Date(event.start);
-                                    return eventDateTime.getDate() === i && eventDateTime.getMonth() === month && eventDateTime.getFullYear() === year;
+                                    const eventEnd = new Date(event.end);
+                                    const eventDateTime = new Date(event.end);
+                                    return eventDateTime.getDate() === i && eventDateTime.getMonth() === month && eventDateTime.getFullYear() === year &&  eventEnd >= today;
                                 });
 
                                 if (eventsForDay.length > 0) {
@@ -386,9 +387,9 @@
                                     year === new Date().getFullYear() &&
                                     month === new Date().getMonth()
                                 ) {
-                                    days += `<div class="day today">${i}</div>`;
+                                    days += `<div class="day today">${i}</div>`; //highlights today's date
                                 } else {
-                                    days += `<div class="day">${i}</div>`;
+                                    days += `<div class="day">${i}</div>`; //regular day
                                 }
                             }
 
@@ -429,7 +430,7 @@
                             let eventList = "";
 
                             events.forEach((event) => {
-                                const eventDate = new Date(event.start);
+                                const eventDate = new Date(event.end);
                                 if (eventDate.getDate() === date.getDate() && eventDate.getMonth() === date.getMonth() && eventDate.getFullYear() === date.getFullYear()) {
                                     eventList += `
                                         <div class="event">
