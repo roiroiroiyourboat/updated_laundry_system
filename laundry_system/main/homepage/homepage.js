@@ -136,6 +136,36 @@ function validateContactNumber(input) {
     }
 }
 
+/*********************LOGIN FORM************************/
+document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault(); 
+
+    const formData = new FormData(this); 
+
+    fetch('login.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json()) // Parse the JSON response
+    .then(data => {
+        if (data.success) {
+            //redirect on successful login
+            window.location.href = '/laundry_system/main/dashboard/dashboard.php';
+        } else {
+            //error message
+            Swal.fire({
+                icon: 'error',
+                title: data.title,
+                text: data.message,
+            });
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
+
 /***************************LAUNDRY SERVICE REQUEST****************************/
 //fetch laundry service
 function fetchServices() {

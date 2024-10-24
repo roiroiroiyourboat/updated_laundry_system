@@ -1,3 +1,13 @@
+<?php
+session_start(); 
+
+$user_role = $_SESSION['user_role'];
+
+if(!isset($_SESSION['user_role'])) {
+    header('location: /laundry_system/main/homepage/homepage.php');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

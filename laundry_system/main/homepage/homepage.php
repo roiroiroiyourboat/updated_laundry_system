@@ -82,11 +82,11 @@ $conn->close();
                         <h5>Login</h5>
                     </div>
 
-                    <form action="/laundry_system/main/homepage/login.php" method="post">
+                    <form id="loginForm">
                         <div class="row">
                             <div class="col">
                                 <label for="form-label">Username</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
+                                <input type="text" class="form-control" id="username" name="username" required>
                             </div>
                         </div>
                             
@@ -96,9 +96,9 @@ $conn->close();
                                 <input type="password" class="form-control" id="password" name="password" required>
                             </div>
                         </div>
-                        <div class="links">
+                        <!-- <div class="links">
                             <span><a href="forgot_password.php">Forgot Password? </a></span>
-                        </div>                            
+                        </div>-->
                             <div class="input-box">
                                 <input type="submit" class="btn" value="Login">
                             </div>
