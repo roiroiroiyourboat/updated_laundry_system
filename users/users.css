@@ -1,0 +1,491 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.progress {
+  height: 3px;
+  width: 0%;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  animation: progress 1s linear;
+}
+
+@keyframes progress {
+  to {
+      background-color: rgb(20, 255, 226);
+      width: 100%;
+  }
+}
+
+/*sidebar*/
+::after,
+::before {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
+
+a {
+text-decoration: none;
+}
+
+li {
+list-style: none;
+}
+
+h1 {
+font-weight: 600;
+font-size: 1.5 rem;
+}
+
+.wrapper {
+display: flex;
+width: 100%;
+height: 100vh;
+}
+
+#sidebar {
+display: flex;
+width: 70px;
+min-width: 70px;
+z-index: 1000;
+transition: all 0.25s ease-in-out;
+flex-direction: column;
+background-color: #0e223e;
+border-radius: 0 20px 20px 0;
+}
+
+#sidebar.expand {
+width: 260px;
+min-width: 260px;
+}
+
+#toggle-btn {
+background-color: transparent;
+cursor: pointer;
+border: 0;
+padding: 1rem 1.5rem;
+}
+
+#toggle-btn i {
+font-size: 1.5 rem;
+color: #fff;
+}
+
+.sidebar-logo {
+margin: auto 0;
+}
+
+.sidebar-logo a {
+color: #fff;
+font-size: 1.15rem;
+font-weight: 600;
+}
+
+#sidebar:not(.expand) .sidebar-logo,
+#sidebar:not(.expand) a.sidebar-link span {
+display: none;
+}
+
+.sidebar-nav {
+padding: 2rem 0;
+flex: 1 1 auto;
+}
+
+a.sidebar-link {
+padding: 0.625rem 1.625rem;
+color: #fff;
+display: block;
+font-size: 0.9rem;
+white-space: nowrap;
+border-left: 3px solid transparent;
+text-decoration: none;
+}
+
+.sidebar-link i {
+font-size: 1.1rem;
+margin-right: 0.75rem;
+}
+
+a.sidebar-link:hover {
+background-color: #232946;
+border-left: 3px solid #eebbc3;
+}
+
+.sidebar-item {
+position: relative;
+}
+
+#sidebar:not(.expand) .sidebar-item .sidebar-dropdown {
+position: absolute;
+top: 0;
+left: 70px;
+background-color: #b8c1ec;
+padding: 0;
+min-width: 15rem;
+display: none;
+}
+
+#sidebar:not(.expand) .sidebar-item:hover .has-dropdown + .sidebar-dropdown {
+display: block;
+max-width: 15em;
+width: 100%;
+opacity: 1;
+}
+
+#sidebar.expand .sidebar-link [data-bs-toggle="collapse"]::after {
+border: solid;
+border-width: 0 0.075rem 0.075rem 0;
+content: "";
+display: inline-block;
+padding: 2px;
+position: absolute;
+right: 1.5rem;
+top: 1rem;
+transform: rotate(-135deg);
+transition: all 0.2s ease-out;
+}
+
+#sidebar.expand .sidebar-link[data-bs-toggle="collapse"].collapsed::after {
+transform: rotate(45deg);
+transition: all 0.2s ease-out;
+}
+
+/*main content*/
+.main-content {
+flex: 1;
+overflow-y: auto;
+padding: 20px;
+transition: margin-left 0.5s ease; 
+}
+
+.table-responsive {
+  padding: 20px;
+} 
+
+.box {
+  display: flex;
+  flex-direction: row;
+  margin: 5px;
+}
+
+.table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  border: #b8c1ec;
+}
+
+/*responsiveness */
+@media (max-width: 768px) {
+  .table {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .table {
+    font-size: 0.8rem;
+  }
+} 
+
+/* second try for ADD user modal  */
+.modal {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); 
+  
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fefefe;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 90%;
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  border-radius: 8px;
+  overflow: auto; margin-top: 10px;
+} 
+
+.modal-open {
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.modal-body {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.modal-body, .btn-success, .btn-info {
+  margin-top: 1rem;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.close, .close-btn {
+  cursor: pointer;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  color: #aaa;
+}
+
+.close:hover, .close:focus, .close-btn:hover, .close-btn:focus{
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.edit-btn {
+  text-decoration: none;
+  color: #000; 
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-btn i {
+  font-size: 1.5rem;
+}
+
+.edit-btn:hover i {
+  color: #007BFF;
+} 
+
+/* adjust the form group to match the layout */
+.form-group {
+  margin-top: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+/* .password-container {
+  position: relative;
+  width: 100%;
+} */
+
+ .password-wrapper {
+  position: relative;
+}
+
+/* show password */
+ .password-wrapper .toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+/* responsiveness */
+@media (max-width: 768px) {  
+  .modal-content {
+    width: 80%;              
+
+    max-width: 300px;      
+  }
+}
+
+@media (min-width: 769px) {
+  .modal-content {
+    width: 45%; /* Keep a slim width */
+  }
+}
+
+/* archive */
+.Archvmodal {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* for archive */
+.modal-cnt {
+  position: relative;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 20px;
+  background-color: white;
+  width: 30%;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.modal-cnt button {
+ display: inline-block;
+ margin: 10px;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #000;
+}
+
+/* search bar */
+.search_bar {
+  position: relative;
+}
+
+.search_bar .form-control {
+  padding-left: 38px;
+}
+
+.search_bar .form-control::placeholder {
+  color: #aaa;
+}
+
+.search_bar .form-control {
+  background-image: url('/laundry_system/main/icons/search-regular-24.png');
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  background-size: 20px 20px;
+}
+
+/* pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  padding-left: 0;
+  list-style: none;
+  border-radius: 0.25rem;
+  margin-top: 20px; 
+  position: absolute;
+  bottom: 20px; 
+  left: 0;
+  right: 0;
+}
+
+.pagination .page-item {
+  margin: 0 5px;
+}
+
+.pagination .page-link {
+  color: #007bff;
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+.pagination .page-link:hover {
+  background-color: #f1f1f1;
+  color: #007bff;
+}
+
+/* logout */
+#logoutModal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#logoutModal.show {
+  display: flex; /* Shows the modal */
+}
+
+.modal-cont {
+  position: relative;
+  padding: 20px;
+  background-color: white;
+  width: 35%;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-buttons .btn {
+  padding: 10px 20px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  flex-grow: 1; /* buttons to take up equal space */
+  margin: 0 10px; 
+}
+
+.btn-yes {
+  background-color: green;
+  color: white;
+}
+
+.btn-no {
+  background-color: red;
+  color: white;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
