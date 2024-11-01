@@ -1,4 +1,5 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 
 //connect to the database
@@ -20,7 +21,7 @@ if (isset($data['reset_pass_username']) && !empty($data['reset_pass_username']) 
     $answer = $data['answer'];
 
     //to check if the username exists in the database
-    $query = $conn->prepare("SELECT answer FROM users WHERE username = ?");
+    $query = $conn->prepare("SELECT answer FROM users WHERE BINARY username = ?");
     $query->bind_param("s", $username);
     $query->execute();
     $result = $query->get_result();
@@ -30,6 +31,7 @@ if (isset($data['reset_pass_username']) && !empty($data['reset_pass_username']) 
 
         //to verify the answer from the database that is hashed
         if (password_verify($answer, $user['answer'])) {
+            $_SESSION['verified_user'] = $username;
             echo json_encode(['success' => true, 'message' => 'Proceed to password reset.']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Incorrect Answer.']);

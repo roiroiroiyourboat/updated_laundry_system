@@ -119,7 +119,7 @@ $conn->close();
                     </div>
                     <div class="modal-body">
                         <form id="forgotPasswordForm">
-                            <p class="text-center">Please input your username and your answer below to reset your password.</p>
+                            <p class="text-center">Please input your username and your answer to reset your password.</p>
                             <div class="mb-3">
                                 <input id="reset_pass_username" type="text" class="form-control" placeholder="Enter your username">
                             </div>
