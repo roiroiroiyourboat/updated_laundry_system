@@ -6,10 +6,12 @@ if (session_destroy()) {
     exit();
 }
 
-$conn = new mysqli('localhost', 'root', '', 'laundry_db');
+// $conn = new mysqli('localhost', 'root', '', 'laundry_db');
 
-if ($conn->connect_error) {
-    die(json_encode(['status' => 'error', 'message' => "Connection error: " . $conn->connect_error]));
-}
+// if ($conn->connect_error) {
+//     die(json_encode(['status' => 'error', 'message' => "Connection error: " . $conn->connect_error]));
+// }
+
+// bukas ko na to gagawin
 
 ?>
